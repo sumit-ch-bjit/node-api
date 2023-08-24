@@ -5,8 +5,20 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "nodeMonConfig": {
+    "ignore": [
+      "data/*"
+    ]
   },
   "author": "sumit",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "winston": "^3.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
 }

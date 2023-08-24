@@ -1,1 +1,109 @@
-{"items":[{"name":"Item 2","description":"This is item 2"},{"name":"Item 2"},{"name":"Item 2","description":"item 2 description","price":3434},{"name":"Item 2","description":"item 2 description","price":3434},{"name":"Item","description":"this is item 2","price":32,"stock":30},{"name":"Item","description":"this is item 2","price":89,"stock":30},{"name":"Item 6","description":"this is item 5","price":89,"stock":30}]}
+{
+  "items": [
+    {
+      "name": "item2",
+      "description": "description of the item2",
+      "price": 5600,
+      "id": 2
+    },
+    {
+      "name": "item3",
+      "description": "description of the item3",
+      "price": 400,
+      "id": 3
+    },
+    { "name": "sumit", "description": "my description", "price": 300, "id": 5 },
+    { "name": "sumit", "description": "my description", "price": 100, "id": 6 },
+    { "name": "sumit", "description": "my description", "price": 109, "id": 7 },
+    { "name": "sumit", "description": "my description", "price": 122, "id": 8 },
+    { "name": "sumit", "description": "my description", "price": 122, "id": 9 },
+    {
+      "name": "sumit",
+      "description": "my description",
+      "price": 122,
+      "id": 12
+    },
+    {
+      "name": "sumit",
+      "description": "my description",
+      "price": 134343,
+      "id": 14
+    },
+    {
+      "name": "laptop",
+      "description": "good product",
+      "price": 30000,
+      "id": 15
+    },
+    {
+      "name": "laptop",
+      "description": "good product",
+      "price": 30000,
+      "id": 16
+    },
+    {
+      "name": "laptop",
+      "description": "good product",
+      "price": 30000,
+      "id": 17
+    },
+    {
+      "name": "laptop",
+      "description": "good product",
+      "price": 30000,
+      "id": 18
+    },
+    {
+      "name": "smartphone",
+      "description": "good smartphone",
+      "price": 344,
+      "id": 19
+    },
+    {
+      "name": "smartphone",
+      "description": "good smartphone",
+      "price": 344,
+      "id": 20
+    },
+    {
+      "name": "smartphone",
+      "description": "good smartphone",
+      "price": 3404,
+      "id": 21
+    },
+    {
+      "name": "smartphone",
+      "description": "good smartphone",
+      "price": 3404,
+      "id": 22
+    },
+    {
+      "name": "smartphone",
+      "description": "good smartphone",
+      "price": 3404,
+      "stock": 400,
+      "id": 23
+    },
+    {
+      "name": "smartphone 2",
+      "description": "not good smartphone",
+      "price": 3404,
+      "stock": 400,
+      "id": 24
+    },
+    {
+      "name": "smartphone 2",
+      "description": "not good smartphone",
+      "price": 404,
+      "stock": 400,
+      "id": 25
+    },
+    {
+      "name": "smartphone 2",
+      "description": "not good enough smartphone",
+      "price": 404,
+      "stock": 400,
+      "id": 26
+    }
+  ]
+}
