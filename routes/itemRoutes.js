@@ -9,7 +9,14 @@ const {
   deleteItem,
 } = require("../controllers/itemControllers");
 
-router.route("/").get(getAllItem).post(createItem);
-router.route("/:id").put(updateItem).delete(deleteItem).get(getOneItem);
+const { productValidator } = require("../middleware/validatorMiddleware");
+
+router.route("/").get(getAllItem).post(productValidator, createItem);
+
+router
+  .route("/:id")
+  .patch(productValidator, updateItem)
+  .delete(deleteItem)
+  .get(getOneItem);
 
 module.exports = router;

@@ -1,9 +1,12 @@
 const fsPromise = require("fs").promises;
+const path = require("path");
 
 class Product {
   async getAllItems() {
     try {
-      const jsonData = await fsPromise.readFile("data.json");
+      const jsonData = await fsPromise.readFile(
+        path.join(__dirname, "..", "data", "data.json")
+      );
 
       // console.log(jsonData);
 
@@ -20,13 +23,18 @@ class Product {
   async addProduct(newItem) {
     // console.log("added new product");
     try {
-      const jsonData = await fsPromise.readFile("data.json");
+      const jsonData = await fsPromise.readFile(
+        path.join(__dirname, "..", "data", "data.json")
+      );
 
       const items = JSON.parse(jsonData);
 
       items.push(newItem);
 
-      await fsPromise.writeFile("data.json", JSON.stringify(items));
+      await fsPromise.writeFile(
+        path.join(__dirname, "..", "data", "data.json"),
+        JSON.stringify(itemsArray)
+      );
       // return newItemObj;
     } catch (error) {
       throw new Error({ error: error });
@@ -35,7 +43,9 @@ class Product {
 
   async findItem(id) {
     try {
-      const jsonData = await fsPromise.readFile("data.json");
+      const jsonData = await fsPromise.readFile(
+        path.join(__dirname, "..", "data", "data.json")
+      );
       const itemsArray = JSON.parse(jsonData);
 
       const foundItem = itemsArray.filter((item) => item.id === id);
@@ -47,7 +57,10 @@ class Product {
   }
   async findByIdAndUpdate(id, product) {
     try {
-      const jsonData = await fsPromise.readFile("data.json");
+      const jsonData = await fsPromise.readFile(
+        path.join(__dirname, "..", "data", "data.json")
+      );
+
       const itemsArray = JSON.parse(jsonData);
       // console.log(itemsArray);
       const index = itemsArray.findIndex((item) => {
@@ -57,10 +70,14 @@ class Product {
 
       if (index !== -1) {
         itemsArray[index] = { ...itemsArray[index], ...product };
-        console.log(itemsArray);
+        // console.log(itemsArray);
       }
 
-      await fsPromise.writeFile("data.json", JSON.stringify(itemsArray));
+      await fsPromise.writeFile(
+        path.join(__dirname, "..", "data", "data.json"),
+        JSON.stringify(itemsArray)
+      );
+      return this.findItem(id);
     } catch (error) {
       throw new Error("error adding new product");
     }
@@ -68,9 +85,10 @@ class Product {
 
   async findByIdAndDelete(id) {
     try {
-      const jsonData = await fsPromise.readFile("data.json");
+      const jsonData = await fsPromise.readFile(
+        path.join(__dirname, "..", "data", "data.json")
+      );
       const itemsArray = JSON.parse(jsonData);
-      console.log(itemsArray);
       const index = itemsArray.findIndex((item) => {
         return item.id === id;
       });
@@ -79,7 +97,10 @@ class Product {
         itemsArray.splice(index, 1);
       }
 
-      await fsPromise.writeFile("data.json", JSON.stringify(itemsArray));
+      await fsPromise.writeFile(
+        path.join(__dirname, "..", "data", "data.json"),
+        JSON.stringify(itemsArray)
+      );
     } catch (error) {
       throw new Error("error adding new product");
     }
