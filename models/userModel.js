@@ -1,18 +1,35 @@
-const fsPromise = require("fs").promises;
-const path = require("path");
+const mongoose = require("mongoose");
 
-class User {
-  async findOne({ email }) {
-    console.log("hello");
-    console.log(email);
-    const jsonData = await fsPromise.readFile(
-      path.join(__dirname, "..", "data", "data.json")
-    );
-    const products = JSON.parse(jsonData);
-    return products;
+const userSchema = new mongoose.Schema(
+  {
+    username: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    firstName: {
+      type: String,
+      required: true,
+    },
+    lastName: {
+      type: String,
+      required: true,
+    },
+  },
+  {
+    timestamps: true,
   }
+);
 
-  async createUser({ name, email, password }) {}
-}
+const User = mongoose.model("User", userSchema);
 
-module.exports = new User();
+module.exports = User;
