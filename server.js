@@ -5,6 +5,7 @@ const users = require("./routes/userRoutes");
 const orders = require("./routes/orderRoutes");
 const connectDB = require("./config/db");
 const { errorHandler } = require("./middleware/errorMiddleware");
+const errorLogger = require("./middleware/errorLogger");
 const dotenv = require("dotenv");
 const chalk = require("chalk");
 dotenv.config();
@@ -16,6 +17,8 @@ const app = express();
 app.use(cors({ origin: "*" }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+errorLogger.setupUnhandledExceptionLogging();
 
 app.use("/api/items", items);
 app.use("/api/users", users);

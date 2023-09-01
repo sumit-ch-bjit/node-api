@@ -1,14 +1,11 @@
 const Order = require("../models/orderModel");
 const Product = require("../models/productModel");
-// const Product = require("../models/productModel");
 const asyncHandler = require("express-async-handler");
 
 const postOrder = asyncHandler(async (req, res) => {
   try {
     const order = req.body;
     const { user, products } = order;
-
-    // console.log(products);
 
     const total = await calculateTotal(products);
 
@@ -39,8 +36,8 @@ const getOrder = asyncHandler(async (req, res) => {
   try {
     const id = req.params.id;
     await Order.findById(id)
-      .populate("user", "-password")
-      .populate("products", "-imageUrl -products")
+      .populate("user", "-password -createdAt -updatedAt")
+      .populate("products", "-imageUrl")
       .then((order) => {
         return res.status(200).json({ message: "order found", order });
       })
@@ -48,7 +45,23 @@ const getOrder = asyncHandler(async (req, res) => {
         return res.status(404).json({ message: "order not found", error });
       });
   } catch (error) {
-    return res.status(500).json({ message: "internal server error" });
+    throw new Error("internal server error");
+  }
+});
+
+const getAllOrders = asyncHandler(async (req, res) => {
+  try {
+    await Order.find()
+      .populate("user", "-password")
+      .populate("products.product")
+      .then((order) => {
+        return res.status(200).json({ message: "all orders", order });
+      })
+      .catch((error) => {
+        return res.status(400).json({ message: "no orders found", error });
+      });
+  } catch (error) {
+    throw new Error("internal server error");
   }
 });
 
@@ -65,6 +78,8 @@ async function calculateTotal(products) {
 
     const foundProducts = await Product.find({ _id: { $in: productIDs } });
 
+    // console.log(foundProducts);
+
     let total = 0;
 
     foundProducts.forEach((product) => {
@@ -80,4 +95,4 @@ async function calculateTotal(products) {
   }
 }
 
-module.exports = { postOrder, getOrder };
+module.exports = { postOrder, getOrder, getAllOrders };

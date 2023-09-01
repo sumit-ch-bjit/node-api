@@ -99,13 +99,33 @@ const generateToken = (id) => {
 };
 
 const userOrders = asyncHandler(async (req, res) => {
-  console.log("id", req.params.id);
-  const ordersByUser = await Order.getUserOrders(req.params.id);
-  if (ordersByUser.length === 0) {
-    res.status(200).json({ message: "no orders by the user" });
-  } else {
-    res.status(200).json({ orders: ordersByUser });
+  // console.log("id", req.params.id);
+  try {
+    const id = req.params.id;
+    // console.log(id);
+
+    await Order.find({ user: id })
+      .populate("user", "-password")
+      .populate("products.product")
+      .then((order) => {
+        return res.status(200).json({ message: "orders by the user", order });
+      })
+      .catch((error) => {
+        return res
+          .status(400)
+          .json({ message: "no order found by the user", error });
+      });
+  } catch (error) {
+    res.status(500).json({ message: "internal server error" });
   }
+
+  // return res.status(200).json({ message: "users orders foound" });
+  // const ordersByUser = await Order.getUserOrders(req.params.id);
+  // if (ordersByUser.length === 0) {
+  //   res.status(200).json({ message: "no orders by the user" });
+  // } else {
+  //   res.status(200).json({ orders: ordersByUser });
+  // }
 });
 
 module.exports = { registerUser, loginUser, userOrders };

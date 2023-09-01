@@ -27,7 +27,6 @@ const orderSchema = new mongoose.Schema({
   },
   total: {
     type: Number,
-    default: 0,
   },
   // Other order-related fields
 });
