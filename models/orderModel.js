@@ -8,6 +8,7 @@ const orderSchema = new mongoose.Schema({
   },
   products: [
     {
+      _id: false,
       product: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Product", // Reference to the Product model
@@ -23,6 +24,10 @@ const orderSchema = new mongoose.Schema({
   orderDate: {
     type: Date,
     default: Date.now,
+  },
+  total: {
+    type: Number,
+    default: 0,
   },
   // Other order-related fields
 });

@@ -1,35 +1,83 @@
 const Order = require("../models/orderModel");
+const Product = require("../models/productModel");
 // const Product = require("../models/productModel");
 const asyncHandler = require("express-async-handler");
 
 const postOrder = asyncHandler(async (req, res) => {
   try {
     const order = req.body;
-    const { user_id, products } = order;
+    const { user, products } = order;
+
+    // console.log(products);
 
     const total = await calculateTotal(products);
 
-    const createdOrder = await Order.createOrder({
-      user_id,
+    const newOrder = new Order({
+      user,
       products,
-      total,
-      status: "Pending",
+      total: total,
     });
-    res.status(200).json({ message: "order created", createdOrder });
+
+    await newOrder
+      .save()
+      .then((order) => {
+        return res
+          .status(200)
+          .json({ message: "order created successfully", order });
+      })
+      .catch((error) => {
+        return res
+          .status(400)
+          .json({ message: "could not add product", error });
+      });
   } catch (error) {
     throw new Error("internal server error");
   }
 });
 
-async function calculateTotal(products) {
-  let total = 0;
-
-  for (const product of products) {
-    const price = await Order.getPrice(product.product_id);
-    total += price * product.quantity;
+const getOrder = asyncHandler(async (req, res) => {
+  try {
+    const id = req.params.id;
+    await Order.findById(id)
+      .populate("user", "-password")
+      .populate("products", "-imageUrl -products")
+      .then((order) => {
+        return res.status(200).json({ message: "order found", order });
+      })
+      .catch((error) => {
+        return res.status(404).json({ message: "order not found", error });
+      });
+  } catch (error) {
+    return res.status(500).json({ message: "internal server error" });
   }
+});
 
-  return total;
+async function calculateTotal(products) {
+  try {
+    const productIDs = products.map((item) => item.product);
+
+    const productQuantities = products.reduce((quantities, item) => {
+      quantities[item.product] = item.quantity;
+      return quantities;
+    }, {});
+
+    // console.log(productQuantities);
+
+    const foundProducts = await Product.find({ _id: { $in: productIDs } });
+
+    let total = 0;
+
+    foundProducts.forEach((product) => {
+      const price = product.price;
+      const quantity = productQuantities[product._id.toString()] || 0;
+      total += price * quantity;
+    });
+
+    return total;
+  } catch (error) {
+    console.error("Error calculating total:", error);
+    throw error;
+  }
 }
 
-module.exports = { postOrder };
+module.exports = { postOrder, getOrder };

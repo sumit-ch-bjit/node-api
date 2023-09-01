@@ -77,7 +77,21 @@ const updateItem = asyncHandler(async (req, res) => {
     if (errors.length === 0) {
       const id = req.params.id;
 
-      await Product.findByIdAndUpdate(id, req.body, { new: true })
+      const { name, description, price, imageUrl, category, inStock } =
+        req.body;
+
+      await Product.findByIdAndUpdate(
+        id,
+        {
+          name,
+          description,
+          price,
+          imageUrl,
+          category,
+          inStock,
+        },
+        { new: true }
+      )
         .then((product) => {
           res.status(200).json({ message: "product updated", product });
         })

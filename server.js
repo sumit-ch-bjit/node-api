@@ -24,5 +24,5 @@ app.use("/api/orders", orders);
 app.use(errorHandler);
 
 app.listen(port, () => {
-  console.log(`server running on port ${chalk.blue.bgRed.bold(port)}...`);
+  console.log(`server running on port ${chalk.yellow.bgRed.bold(port)}...`);
 });
