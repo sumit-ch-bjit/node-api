@@ -1,7 +1,11 @@
 const mongoose = require("mongoose");
 
 const productSchema = new mongoose.Schema({
-  name: {
+  id: {
+    type: Number,
+    required: true,
+  },
+  title: {
     type: String,
     required: true,
   },
@@ -13,19 +17,35 @@ const productSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  imageUrl: {
+  discountPercentage: {
+    type: Number,
+    required: true,
+  },
+  rating: {
+    type: Number,
+    required: true,
+  },
+  stock: {
+    type: Number,
+    required: true,
+  },
+  brand: {
     type: String,
     required: true,
   },
   category: {
     type: String,
-    enum: ["Electronics", "Clothing", "Books", "Beauty", "Other"],
     required: true,
   },
-  inStock: {
-    type: Boolean,
-    default: true,
+  thumbnail: {
+    type: String,
+    required: true,
   },
+  images: [
+    {
+      type: String,
+    },
+  ],
 });
 
 const Product = mongoose.model("Product", productSchema);

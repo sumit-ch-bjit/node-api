@@ -1,5 +1,5 @@
 const Item = require("../models/productModel");
-const { body } = require("express-validator");
+const { body, validationResult } = require("express-validator");
 
 const productValidator = {
   create: [
@@ -38,6 +38,32 @@ const productUpdateValidator = {
   ],
 };
 
+const orderValidationRules = () => {
+  return [
+    body("user").isMongoId().withMessage("Invalid user ID"),
+    body("products").isArray().withMessage("Products must be an array"),
+    body("products.*.product").isMongoId().withMessage("Invalid product ID"),
+    body("products.*.quantity")
+      .isInt({ min: 1 })
+      .withMessage("Quantity must be a positive integer"),
+  ];
+};
+
+const validateOrders = (req, res, next) => {
+  const errors = validationResult(req);
+
+  if (errors.isEmpty()) {
+    return next();
+  }
+
+  const extractedErrors = [];
+  errors.array().map((err) => extractedErrors.push({ [err.param]: err.msg }));
+
+  return res.status(400).json({
+    errors: extractedErrors,
+  });
+};
+
 // const orderValidator = (req, res, next) => {
 //   const { user_id, products } = req.body;
 
@@ -57,16 +83,36 @@ const productUpdateValidator = {
 // };
 
 const userValidator = {
-  create: [
+  register: [
     body("username")
       .exists()
       .notEmpty()
       .isAlphanumeric()
-      .withMessage("cannot be empty and must be alphanumeric"),
-    body("email").isEmail(),
-    body("password").isLength({ min: 6 }),
-    body("firstName").notEmpty(),
-    body("lastName").notEmpty(),
+      .withMessage("cannot be empty and must be alphanumeric")
+      .bail(),
+    body("email").isEmail().withMessage("has to be a valid email").bail(),
+    body("password")
+      .isStrongPassword({
+        minLength: 8,
+        minLowercase: 1,
+        minUppercase: 1,
+        minSymbols: 1,
+      })
+      .withMessage(
+        "password should be 8 character long and must contain 1 lowercase, 1 uppercase and 1 symbol"
+      )
+      .bail(),
+    body("role")
+      .optional()
+      .custom((value) => {
+        if (value && !["admin", "user"].includes(value)) {
+          throw new Error("Invalid user type");
+        }
+        return true;
+      })
+      .bail(),
+    body("firstName").notEmpty().withMessage("fistname cannot be empty"),
+    body("lastName").notEmpty().withMessage("lastname cannot be empty"),
     // Add more validation for address fields if needed
   ],
 };
@@ -76,4 +122,6 @@ module.exports = {
   // orderValidator,
   userValidator,
   productUpdateValidator,
+  orderValidationRules,
+  validateOrders,
 };

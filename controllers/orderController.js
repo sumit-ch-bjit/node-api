@@ -1,6 +1,7 @@
 const Order = require("../models/orderModel");
 const Product = require("../models/productModel");
 const asyncHandler = require("express-async-handler");
+const HTTP_STATUS = require("../constants/statusCodes");
 
 const postOrder = asyncHandler(async (req, res) => {
   try {
@@ -19,12 +20,12 @@ const postOrder = asyncHandler(async (req, res) => {
       .save()
       .then((order) => {
         return res
-          .status(200)
+          .status(HTTP_STATUS.OK)
           .json({ message: "order created successfully", order });
       })
       .catch((error) => {
         return res
-          .status(400)
+          .status(HTTP_STATUS.BAD_REQUEST)
           .json({ message: "could not add product", error });
       });
   } catch (error) {
@@ -37,33 +38,37 @@ const getOrder = asyncHandler(async (req, res) => {
     const id = req.params.id;
     await Order.findById(id)
       .populate("user", "-password -createdAt -updatedAt")
-      .populate("products", "-imageUrl")
+      .populate("products.product", "-imageUrl")
       .then((order) => {
-        return res.status(200).json({ message: "order found", order });
+        return res
+          .status(HTTP_STATUS.OK)
+          .json({ message: "order found", order });
       })
       .catch((error) => {
-        return res.status(404).json({ message: "order not found", error });
+        return res
+          .status(HTTP_STATUS.NOT_FOUND)
+          .json({ message: "order not found", error });
       });
   } catch (error) {
     throw new Error("internal server error");
   }
 });
 
-const getAllOrders = asyncHandler(async (req, res) => {
-  try {
-    await Order.find()
-      .populate("user", "-password")
-      .populate("products.product")
-      .then((order) => {
-        return res.status(200).json({ message: "all orders", order });
-      })
-      .catch((error) => {
-        return res.status(400).json({ message: "no orders found", error });
-      });
-  } catch (error) {
-    throw new Error("internal server error");
-  }
-});
+// const getAllOrders = asyncHandler(async (req, res) => {
+//   try {
+//     await Order.find()
+//       .populate("user", "-password")
+//       .populate("products.product")
+//       .then((order) => {
+//         return res.status(200).json({ message: "all orders", order });
+//       })
+//       .catch((error) => {
+//         return res.status(400).json({ message: "no orders found", error });
+//       });
+//   } catch (error) {
+//     throw new Error("internal server error");
+//   }
+// });
 
 async function calculateTotal(products) {
   try {
@@ -95,4 +100,4 @@ async function calculateTotal(products) {
   }
 }
 
-module.exports = { postOrder, getOrder, getAllOrders };
+module.exports = { postOrder, getOrder };

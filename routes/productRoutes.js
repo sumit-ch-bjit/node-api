@@ -14,12 +14,17 @@ const {
   productUpdateValidator,
 } = require("../middleware/validatorMiddleware");
 
-router.route("/").get(getAllItem).post(productValidator.create, createItem);
+const { isAuthorized, isAdmin } = require("../middleware/authMiddleware");
+
+router
+  .route("/")
+  .get(getAllItem)
+  .post(productValidator.create, isAuthorized, isAdmin, createItem);
 
 router
   .route("/:id")
-  .patch(productUpdateValidator.create, updateItem)
-  .delete(deleteItem)
+  .patch(productUpdateValidator.create, isAuthorized, isAdmin, updateItem)
+  .delete(isAuthorized, isAdmin, deleteItem)
   .get(getOneItem);
 
 module.exports = router;
