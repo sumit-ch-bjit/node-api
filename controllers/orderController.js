@@ -1,7 +1,68 @@
 const Order = require("../models/orderModel");
 const Product = require("../models/productModel");
+const Cart = require("../models/cartModel");
 const asyncHandler = require("express-async-handler");
 const HTTP_STATUS = require("../constants/statusCodes");
+
+const checkout = asyncHandler(async (req, res) => {
+  const { cartId } = req.body;
+  console.log(cartId);
+
+  try {
+    const cart = await Cart.findById(cartId)
+      .populate("user", "-createdAt -updatedAt")
+      .populate("items.product");
+
+    console.log(cart);
+
+    if (!cart) {
+      return res.status(404).json({ message: "Cart not found" });
+    }
+
+    if (cart.items.length === 0) {
+      console.log("no items in the products");
+    }
+
+    const order = new Order({
+      user: cart.user,
+      products: cart.items,
+      total: cart.total,
+    });
+
+    // console.log(order);
+
+    for (const item of cart.items) {
+      const product = await Product.findById(item.product);
+      if (product) {
+        // Ensure the product has enough stock
+        if (product.stock >= item.quantity) {
+          product.stock -= item.quantity;
+          await product.save();
+        } else {
+          return res.status(400).json({
+            message: "Insufficient stock for some products in the order",
+          });
+        }
+      }
+    }
+
+    await order.save();
+
+    cart.items = [];
+    cart.total = 0;
+
+    await cart.save();
+
+    await Cart.findByIdAndDelete(cartId);
+
+    res
+      .status(200)
+      .json({ message: "Order created and cart cleared successfully", order });
+  } catch (error) {
+    console.error("Error during checkout:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 
 const postOrder = asyncHandler(async (req, res) => {
   try {
@@ -100,4 +161,4 @@ async function calculateTotal(products) {
   }
 }
 
-module.exports = { postOrder, getOrder };
+module.exports = { postOrder, getOrder, checkout };

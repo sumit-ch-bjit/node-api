@@ -4,6 +4,7 @@ const items = require("./routes/productRoutes");
 const users = require("./routes/userRoutes");
 const orders = require("./routes/orderRoutes");
 const auth = require("./routes/authRoutes");
+const cart = require("./routes/cartRoutes");
 const connectDB = require("./config/db");
 const { errorHandler } = require("./middleware/errorMiddleware");
 const errorLogger = require("./middleware/errorLogger");
@@ -25,6 +26,7 @@ app.use("/api/items", items);
 app.use("/api/users", users);
 app.use("/api/orders", orders);
 app.use("/api/auth", auth);
+app.use("/api/cart", cart);
 
 app.use(errorHandler);
 

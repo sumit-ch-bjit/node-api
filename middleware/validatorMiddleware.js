@@ -82,6 +82,20 @@ const validateOrders = (req, res, next) => {
 //   }
 // };
 
+const cartValidator = {
+  addItemToCart: [
+    body("userId").trim().isMongoId().withMessage("Invalid user ID"),
+    body("productId").trim().isMongoId().withMessage("Invalid product ID"),
+    body("quantity")
+      .isInt({ min: 1 })
+      .withMessage("Quantity must be a positive integer"),
+  ],
+  removeFromCart: [
+    body("userId").trim().isMongoId().withMessage("Invalid user ID"),
+    body("productId").trim().isMongoId().withMessage("Invalid product ID"),
+  ],
+};
+
 const userValidator = {
   register: [
     body("username")
@@ -124,4 +138,5 @@ module.exports = {
   productUpdateValidator,
   orderValidationRules,
   validateOrders,
+  cartValidator,
 };

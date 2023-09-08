@@ -1,0 +1,6 @@
+[2023-09-08T03:59:24.078Z] error: Uncaught Exception: validationResult is not defined
+ReferenceError: validationResult is not defined
+    at addToCart (/home/bjit/Documents/node-api/controllers/cartController.js:2:18)
+    at Layer.handle [as handle_request] (/home/bjit/Documents/node-api/node_modules/express/lib/router/layer.js:95:5)
+    at next (/home/bjit/Documents/node-api/node_modules/express/lib/router/route.js:144:13)
+    at middleware (/home/bjit/Documents/node-api/node_modules/express-validator/src/middlewares/check.js:16:13)
